@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 final List<Widget> preventions = [
   Container(
-    alignment: Alignment.bottomCenter,
+    alignment: Alignment.topCenter,
     width: 60,
     height: 40,
     margin: const EdgeInsets.only(right: 12.0),
@@ -24,7 +24,7 @@ final List<Widget> preventions = [
     ),
   ),
   Container(
-    alignment: Alignment.bottomCenter,
+    alignment: Alignment.topCenter,
     width: 60,
     height: 40,
     margin: const EdgeInsets.only(right: 12.0),
@@ -43,7 +43,7 @@ final List<Widget> preventions = [
     ),
   ),
   Container(
-    alignment: Alignment.bottomCenter,
+    alignment: Alignment.topCenter,
     width: 60,
     height: 40,
     margin: const EdgeInsets.only(right: 12.0),
@@ -62,7 +62,7 @@ final List<Widget> preventions = [
     ),
   ),
   Container(
-    alignment: Alignment.bottomCenter,
+    alignment: Alignment.topCenter,
     width: 60,
     height: 40,
     margin: const EdgeInsets.only(right: 12.0),

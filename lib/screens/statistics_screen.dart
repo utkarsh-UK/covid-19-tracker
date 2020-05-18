@@ -7,28 +7,76 @@ import '../models/daily_series.dart';
 import '../widgets/daily_cases_chart.dart';
 import 'package:http/http.dart' as http;
 import '../constants/api.dart';
+import '../models/extensions.dart';
 
 class StatisticsScreen extends StatefulWidget {
   @override
   _StatisticsScreenState createState() => _StatisticsScreenState();
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
-  bool isMyStateSelected = true;
+class _StatisticsScreenState extends State<StatisticsScreen>
+    with SingleTickerProviderStateMixin {
+  Future<List<DailyAffectedSeries>> casesFuture;
+
   List<bool> toggleButtonsState = [];
-  List<DailyAffectedSeries> cases = [];
+  Map<String, int> latestCaseData = {};
+
+  bool isMyStateSelected = true;
+  bool isLatestDataFetching = true;
 
   @override
   void initState() {
     super.initState();
 
     toggleButtonsState = List.generate(3, (index) => index == 0 ? true : false);
-    /* http.get(HISTORY_DATA).then((response) {
-      Map<String, dynamic> data = json.decode(response.body);
-      List<dynamic> days = data['data'];
-      print(days.reversed.toList().sublist(0, 7)[0]['regional'][4]
-          ['totalConfirmed']);
-    }); */
+    casesFuture ??= _getDailyCasesData();
+    _getLatestCasesData();
+  }
+
+  void _getLatestCasesData() async {
+    final response = await http.get(LATEST_DATA);
+    if (response.statusCode == 200) {
+      Map<dynamic, dynamic> responseJSON = json.decode(response.body);
+      Map<dynamic, dynamic> officialSummary = responseJSON['data']['summary'];
+      List<dynamic> unofficialSummary =
+          responseJSON['data']['unofficial-summary'];
+      latestCaseData.putIfAbsent('Affected', () => officialSummary['total']);
+      latestCaseData.putIfAbsent('Death', () => officialSummary['deaths']);
+      latestCaseData.putIfAbsent(
+          'Discharged', () => officialSummary['discharged']);
+      latestCaseData.putIfAbsent(
+          'Recovered', () => unofficialSummary[0]['recovered']);
+      latestCaseData.putIfAbsent(
+          'Active', () => unofficialSummary[0]['active']);
+    }
+
+    setState(() => isLatestDataFetching = false);
+  }
+
+  Future<List<DailyAffectedSeries>> _getDailyCasesData() async {
+    List<DailyAffectedSeries> cases = [];
+    final response = await http.get(HISTORY_DATA);
+    Map<String, dynamic> data = json.decode(response.body);
+    List<dynamic> days = data['data'].reversed.toList().sublist(0, 7);
+
+    days.forEach((dayWiseData) {
+      String time = '${dayWiseData['day']}';
+
+      List<dynamic> dailyDataList = dayWiseData['regional'];
+      var map = dailyDataList
+          .firstWhere((regionalData) => regionalData['loc'] == 'Maharashtra');
+
+      cases.add(
+        DailyAffectedSeries(
+          time: time.substring(5),
+          count: map['totalConfirmed'],
+          barColor: chart.ColorUtil.fromDartColor(Colors.red),
+        ),
+      );
+    });
+    ;
+
+    return cases;
   }
 
   @override
@@ -36,43 +84,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final themeData = Theme.of(context);
     final textTheme = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
-    final List<DailyAffectedSeries> data = [
-      DailyAffectedSeries(
-        time: '11',
-        count: 1000,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-      DailyAffectedSeries(
-        time: '12',
-        count: 2000,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-      DailyAffectedSeries(
-        time: '13',
-        count: 3000,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-      DailyAffectedSeries(
-        time: '14',
-        count: 4000,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-      DailyAffectedSeries(
-        time: '15',
-        count: 1500,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-      DailyAffectedSeries(
-        time: '16',
-        count: 2500,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-      DailyAffectedSeries(
-        time: '17',
-        count: 500,
-        barColor: chart.ColorUtil.fromDartColor(Colors.red),
-      ),
-    ];
 
     return Scaffold(
       backgroundColor: themeData.primaryColor,
@@ -81,168 +92,199 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           width: size.width,
           height: size.height,
           child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        CircleAvatar(
-                          radius: 16,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: Image(
-                              image: AssetImage(COVID),
-                              fit: BoxFit.cover,
-                            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 16,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Image(
+                            image: AssetImage(COVID),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        Icon(
-                          Icons.notifications_none,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 25),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      'Statistics',
-                      style: textTheme.headline3.copyWith(
-                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 25),
-                  Container(
-                    width: size.width * 0.9,
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                    padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 1,
-                          child: FlatButton(
-                            color: isMyStateSelected
-                                ? Colors.white
-                                : Colors.transparent,
-                            child: FittedBox(
-                              child: Text(
-                                'My State',
-                                style: isMyStateSelected
-                                    ? textTheme.subtitle1
-                                    : textTheme.subtitle1.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isMyStateSelected = !isMyStateSelected;
-                              });
-                            },
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: FlatButton(
-                            color: isMyStateSelected
-                                ? Colors.transparent
-                                : Colors.white,
-                            child: FittedBox(
-                              child: Text(
-                                'My Country',
-                                style: isMyStateSelected
-                                    ? textTheme.subtitle1.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                      )
-                                    : textTheme.subtitle1,
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isMyStateSelected = !isMyStateSelected;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: ToggleButtons(
-                      selectedColor: Colors.white,
-                      isSelected: toggleButtonsState,
-                      disabledColor: Colors.white.withOpacity(0.9),
-                      fillColor: Colors.transparent,
-                      onPressed: (int index) {
-                        setState(() {
-                          toggleButtonsState[index] =
-                              !toggleButtonsState[index];
-                        });
-                      },
-                      children: [
-                        Text('Total', style: textTheme.caption),
-                        Text('Today', style: textTheme.caption),
-                        Text('Yesterday', style: textTheme.caption),
-                      ],
-                    ),
-                  ),
-                  _buildTotalDatasetWidget(size: size, textTheme: textTheme),
-                  SizedBox(height: 12.0),
-                  Expanded(
-                    child: Container(
-                      width: size.width,
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
+                      Icon(
+                        Icons.notifications_none,
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30.0),
-                          topRight: Radius.circular(30.0),
+                        size: 30,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 25),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    'Statistics',
+                    style: textTheme.headline3.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 25),
+                Container(
+                  height: size.height * 0.1,
+                  width: size.width * 0.9,
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Stack(
+                    children: [
+                      AnimatedPositioned(
+                        left: isMyStateSelected ? 0 : size.width * 0.45,
+                        top: 0,
+                        bottom: 0,
+                        duration: Duration(milliseconds: 400),
+                        child: Container(
+                          width: size.width * 0.4,
+                          height: size.height * 0.1,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
                         ),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Text(
-                            'Daily Cases',
-                            style: textTheme.bodyText1.copyWith(
-                              color: Colors.black,
+                          SizedBox(
+                            width: size.width * 0.4,
+                            child: FlatButton(
+                              child: FittedBox(
+                                child: Text(
+                                  'My State',
+                                  style: isMyStateSelected
+                                      ? textTheme.subtitle1
+                                      : textTheme.subtitle1.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isMyStateSelected = !isMyStateSelected;
+                                });
+                              },
                             ),
                           ),
-                          Container(
-                            height: size.height * 0.3,
-                            width: size.width,
-                            child: DailyCasesChart(data: data),
+                          SizedBox(
+                            width: size.width * 0.4,
+                            child: FlatButton(
+                              child: FittedBox(
+                                child: Text(
+                                  'My Country',
+                                  style: isMyStateSelected
+                                      ? textTheme.subtitle1.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400,
+                                        )
+                                      : textTheme.subtitle1,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isMyStateSelected = !isMyStateSelected;
+                                });
+                              },
+                            ),
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: ToggleButtons(
+                    selectedColor: Colors.white,
+                    isSelected: toggleButtonsState,
+                    disabledColor: Colors.white.withOpacity(0.9),
+                    fillColor: Colors.transparent,
+                    onPressed: (int index) {
+                      setState(() {
+                        toggleButtonsState[index] = !toggleButtonsState[index];
+                      });
+                    },
+                    children: [
+                      Text('Total', style: textTheme.caption),
+                      Text('Today', style: textTheme.caption),
+                      Text('Yesterday', style: textTheme.caption),
+                    ],
+                  ),
+                ),
+                _buildTotalDatasetWidget(size: size, textTheme: textTheme),
+                SizedBox(height: 12.0),
+                Expanded(
+                  child: Container(
+                    width: size.width,
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Daily Cases',
+                          style: textTheme.bodyText1.copyWith(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Expanded(
+                          child: FutureBuilder<List<DailyAffectedSeries>>(
+                            future: casesFuture,
+                            builder: (ctx, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              if (snapshot.hasData) {
+                                return Container(
+                                  height: size.height * 0.3,
+                                  width: size.width,
+                                  child: DailyCasesChart(data: snapshot.data),
+                                );
+                              } else if (snapshot.error) {
+                                return Text('Some error occured');
+                              }
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -281,7 +323,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         children: [
                           TextSpan(text: 'Affected\n'),
                           TextSpan(
-                            text: '3,36,456',
+                            text: isLatestDataFetching
+                                ? 'Fetching...'
+                                : '${latestCaseData['Affected']}'
+                                    .toFormattedNumber(),
                             style: textTheme.button.copyWith(fontSize: 28.0),
                           ),
                         ],
@@ -309,7 +354,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         children: [
                           TextSpan(text: 'Death\n'),
                           TextSpan(
-                            text: '92,678',
+                            text: isLatestDataFetching
+                                ? 'Fetching...'
+                                : '${latestCaseData['Death']}'
+                                    .toFormattedNumber(),
                             style: textTheme.button.copyWith(fontSize: 28.0),
                           ),
                         ],
@@ -343,7 +391,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         children: [
                           TextSpan(text: 'Recovered\n'),
                           TextSpan(
-                            text: '1,23,456',
+                            text: isLatestDataFetching
+                                ? 'Fetching...'
+                                : '${latestCaseData['Recovered']}'
+                                    .toFormattedNumber(),
                             style: textTheme.button.copyWith(fontSize: 20.0),
                           ),
                         ],
@@ -371,7 +422,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         children: [
                           TextSpan(text: 'Active\n'),
                           TextSpan(
-                            text: '7,45,890',
+                            text: isLatestDataFetching
+                                ? 'Fetching...'
+                                : '${latestCaseData['Active']}'
+                                    .toFormattedNumber(),
                             style: textTheme.button.copyWith(fontSize: 20.0),
                           ),
                         ],
@@ -399,7 +453,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                         children: [
                           TextSpan(text: 'Discharged\n'),
                           TextSpan(
-                            text: '92,678',
+                            text: isLatestDataFetching
+                                ? 'Fetching...'
+                                : '${latestCaseData['Discharged']}'
+                                    .toFormattedNumber(),
                             style: textTheme.button.copyWith(fontSize: 20.0),
                           ),
                         ],
