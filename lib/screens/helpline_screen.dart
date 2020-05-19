@@ -250,6 +250,7 @@ class _HelplineScreenState extends State<HelplineScreen> {
               Container(
                 alignment: Alignment.topCenter,
                 height: size.height * 0.2,
+                width: size.width,
                 margin: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: ListView.builder(
                   itemCount: preventions.length,
@@ -300,8 +301,8 @@ class _HelplineScreenState extends State<HelplineScreen> {
                                 TextSpan(
                                   text:
                                       'Follow the instructions to do your own test.',
-                                  style: themeData.textTheme.bodyText2
-                                      .copyWith(color: Colors.white),
+                                  style: themeData.textTheme.bodyText2.copyWith(
+                                      color: Colors.white, fontSize: 14.0),
                                 ),
                               ],
                             ),
