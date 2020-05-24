@@ -23,5 +23,3 @@ extension NumberParser on String {
     }
   }
 }
-
-// 134500

@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
-import '../models/daily_series.dart';
 import 'package:charts_flutter/flutter.dart' as chart;
+import 'package:flutter/material.dart';
+
+import '../models/daily_series.dart';
+import '../models/extensions.dart';
 
 class DailyCasesChart extends StatelessWidget {
   final List<DailyAffectedSeries> data;
@@ -16,7 +18,16 @@ class DailyCasesChart extends StatelessWidget {
         domainFn: (DailyAffectedSeries series, _) => series.time,
         measureFn: (DailyAffectedSeries series, int index) => series.count,
         colorFn: (DailyAffectedSeries series, int index) => series.barColor,
-        displayName: 'Affected',
+        labelAccessorFn: (DailyAffectedSeries series, _) =>
+            '${series.count}'.toFormattedNumber(),
+        insideLabelStyleAccessorFn: (DailyAffectedSeries series, _) =>
+            chart.TextStyleSpec(
+                color: chart.MaterialPalette.white, fontWeight: 'bold'),
+        outsideLabelStyleAccessorFn: (DailyAffectedSeries series, _) =>
+            chart.TextStyleSpec(
+          color: chart.MaterialPalette.white,
+          fontWeight: 'w700',
+        ),
       ),
     ];
 
@@ -24,6 +35,15 @@ class DailyCasesChart extends StatelessWidget {
       series,
       animate: true,
       barGroupingType: chart.BarGroupingType.groupedStacked,
+      barRendererDecorator: chart.BarLabelDecorator<String>(
+        labelPosition: chart.BarLabelPosition.inside,
+        outsideLabelStyleSpec: chart.TextStyleSpec(
+          fontSize: 10,
+          fontWeight: 'bold',
+        ),
+      ),
+      animationDuration: Duration(seconds: 1),
+      defaultInteractions: true,
     );
   }
 }

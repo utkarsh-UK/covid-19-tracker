@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-import 'package:covid/constants/assets.dart';
-import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as chart;
-import '../models/daily_series.dart';
-import '../widgets/daily_cases_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import '../constants/api.dart';
+import '../constants/assets.dart';
+import '../models/daily_series.dart';
 import '../models/extensions.dart';
+import '../widgets/daily_cases_chart.dart';
 
 class StatisticsScreen extends StatefulWidget {
   @override
@@ -74,7 +75,6 @@ class _StatisticsScreenState extends State<StatisticsScreen>
         ),
       );
     });
-    ;
 
     return cases;
   }
@@ -214,25 +214,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ToggleButtons(
-                    selectedColor: Colors.white,
-                    isSelected: toggleButtonsState,
-                    disabledColor: Colors.white.withOpacity(0.9),
-                    fillColor: Colors.transparent,
-                    onPressed: (int index) {
-                      setState(() {
-                        toggleButtonsState[index] = !toggleButtonsState[index];
-                      });
-                    },
-                    children: [
-                      Text('Total', style: textTheme.caption),
-                      Text('Today', style: textTheme.caption),
-                      Text('Yesterday', style: textTheme.caption),
-                    ],
-                  ),
-                ),
+                SizedBox(height: 18.0),
                 _buildTotalDatasetWidget(size: size, textTheme: textTheme),
                 SizedBox(height: 12.0),
                 Expanded(
