@@ -1,9 +1,11 @@
-import 'package:covid/screens/statistics_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../constants/colors.dart';
 import '../screens/helpline_screen.dart';
+import '../screens/statistics_screen.dart';
+import '../screens/todo_list_screen.dart';
+import '../screens/about_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -86,8 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           HelplineScreen(),
           StatisticsScreen(),
-          Container(),
-          Container(),
+          ToDoListScreen(),
+          AboutScreen(),
         ],
         onPageChanged: (index) => setState(() {
           _currentIndexTab = index;

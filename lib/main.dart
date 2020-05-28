@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.w300,
           ),
           headline5: GoogleFonts.quicksand(
-            color: MyColors.FONT_LIGHT_COLOR,
+            color: MyColors.PRIMARY_COLOR,
             fontSize: 24.0,
             fontWeight: FontWeight.w500,
           ),

@@ -38,6 +38,7 @@ dependencies:
   # other
   http: ^0.12.1
   url_launcher: ^5.4.5
+  about: ^1.1.2
 
 dev_dependencies:
   flutter_test:

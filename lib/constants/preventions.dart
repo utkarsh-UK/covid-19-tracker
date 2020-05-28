@@ -124,3 +124,38 @@ final List<Widget> preventions = [
     ),
   ),
 ];
+
+final List<Map> precautions = [
+  {
+    'title': 'Wash Your Hands',
+    'body':
+        'Wash your hands with clean, running water (warm or cold), turn off the tap, and apply soap',
+    'image': 'assets/images/washing_hands.png',
+    'bg_color': Color(0xFFFFECB3),
+    'title_color': Color(0xFFffab00),
+  },
+  {
+    'title': 'Avoid Touching Your Face',
+    'body':
+        'Wash your hands with clean, running water (warm or cold), turn off the tap, and apply soap',
+    'image': 'assets/images/avoid_face.png',
+    'bg_color': Color(0xFFB7FFFF),
+    'title_color': Color(0xFF00B0FF)
+  },
+  {
+    'title': 'Avoid Close Contact',
+    'body':
+        'Wash your hands with clean, running water (warm or cold), turn off the tap, and apply soap',
+    'image': 'assets/images/social_distancing.png',
+    'bg_color': Color(0xFFF9BED2),
+    'title_color': Color(0xFFBA2D65)
+  },
+  {
+    'title': 'Stay Clean',
+    'body':
+        'Wash your hands with clean, running water (warm or cold), turn off the tap, and apply soap',
+    'image': 'assets/images/cleaning.png',
+    'bg_color': Color(0xFFEFAFFA),
+    'title_color': Color(0xFFAA00C7)
+  },
+];
