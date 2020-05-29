@@ -22,7 +22,7 @@ class _StatisticsScreenState extends State<StatisticsScreen>
   List<bool> toggleButtonsState = [];
   Map<String, int> latestCaseData = {};
 
-  bool isMyStateSelected = true;
+  bool isMyStateSelected = false;
   bool isLatestDataFetching = true;
 
   @override

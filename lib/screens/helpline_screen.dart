@@ -14,7 +14,6 @@ class HelplineScreen extends StatefulWidget {
 }
 
 class _HelplineScreenState extends State<HelplineScreen> {
-  String dropDownValue = 'MAH';
   String contactNumber = '';
   String countryFlag = '';
   Map<String, String> contacts = {};
@@ -97,6 +96,7 @@ class _HelplineScreenState extends State<HelplineScreen> {
                               Container(
                                 width: 100,
                                 alignment: Alignment.center,
+                                padding: const EdgeInsets.all(6.0),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20.0),
@@ -106,37 +106,9 @@ class _HelplineScreenState extends State<HelplineScreen> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     Text(countryFlag),
-                                    DropdownButton(
-                                      dropdownColor: Colors.white,
-                                      style: themeData.textTheme.subtitle1
-                                          .copyWith(
-                                        fontSize: 18.0,
-                                      ),
-                                      value: dropDownValue,
-                                      underline: SizedBox.shrink(),
-                                      icon: Icon(Icons.arrow_downward),
-                                      onChanged: (String val) => setState(() {
-                                        dropDownValue = val;
-                                        contactNumber = contacts[val];
-                                      }),
-                                      items: [
-                                        DropdownMenuItem<String>(
-                                          value: 'MAH',
-                                          child: Text('MAH'),
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          value: 'GUJ',
-                                          child: Text('GUJ'),
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          value: 'DEL',
-                                          child: Text('DEL'),
-                                        ),
-                                        DropdownMenuItem<String>(
-                                          value: 'MP',
-                                          child: Text('MP'),
-                                        ),
-                                      ],
+                                    Text(
+                                      'MAH',
+                                      style: themeData.textTheme.subtitle1,
                                     ),
                                   ],
                                 ),
@@ -226,7 +198,9 @@ class _HelplineScreenState extends State<HelplineScreen> {
                                       ),
                                     ],
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    //Can be added url launcher to make SMS
+                                  },
                                 ),
                               ),
                             ],
@@ -338,7 +312,7 @@ class _HelplineScreenState extends State<HelplineScreen> {
 
   /// Get helpline numbers from [API]
   ///
-  /// For demo, only [Maharashtra, Gujarat, Delhi and Madhya Pradesh] states are included
+  /// For demo, only [Maharashtra] state is included
   void getHelplineNumbers() async {
     final response = await http.get(HELPLINE_API);
     if (response.statusCode == 200) {
@@ -346,18 +320,6 @@ class _HelplineScreenState extends State<HelplineScreen> {
       contacts.putIfAbsent(
         'MAH',
         () => data['data']['contacts']['regional'][13]['number'],
-      );
-      contacts.putIfAbsent(
-        'GUJ',
-        () => data['data']['contacts']['regional'][6]['number'],
-      );
-      contacts.putIfAbsent(
-        'DEL',
-        () => data['data']['contacts']['regional'][32]['number'],
-      );
-      contacts.putIfAbsent(
-        'MP',
-        () => data['data']['contacts']['regional'][12]['number'],
       );
 
       contactNumber = data['data']['contacts']['regional'][13]['number'];
