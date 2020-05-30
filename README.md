@@ -11,8 +11,12 @@ User can call for emergencies through home page or see daily affected CORONA pat
 * The image resources used in this app are from [Pexels](https://www.pexels.com/).
 
 ### Some Glimpse
-![Home Screen](screenshots/home.png) ![Stats Screen](screenshots/stats.png)
-![TODO Screen](screenshots/todo.png)
+<p float="left">
+  <img src="screenshots/home.png" width="150"  alt="Home Screen" />
+  <img src="screenshots/stats.png" width="150"  alt="Stats Screen" /> 
+  <img src="screenshots/todo.png" width="150"  alt="TODO Screen" />
+</p>
 
 >Made with love by **Utkarsh** :heart:
+
 >*This app is built with sole intention of exploring and showcasing UI skills :relaxed:*
