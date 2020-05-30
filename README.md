@@ -1,16 +1,18 @@
-# covid
+# COVID-19 App
 
-A new Flutter project.
+### Introduction
 
-## Getting Started
+A COVID Statistics checker app build with Flutter. App primararily focuses on statistics of Indian COVID cases and especially for **Maharashtra** state.
 
-This project is a starting point for a Flutter application.
+User can call for emergencies through home page or see daily affected CORONA patients data. Also, it provides a graphical representation [Bar Graph] of daily cases.
 
-A few resources to get you started if this is your first Flutter project:
+* The UI is inpired a lot from this [Dribble](https://dribbble.com/shots/11015463-Covid-19-App-Free) post.
+* API consumed for this app : [Indian COVID API](https://github.com/amodm/api-covid19-in).
+* The image resources used in this app are from [Pexels](https://www.pexels.com/).
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Some Glimpse
+![Home Screen](screenshots/home.png) ![Stats Screen](screenshots/stats.png)
+![TODO Screen](screenshots/todo.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+>Made with love by **Utkarsh** :heart:
+>*This app is built with sole intention of exploring and showcasing UI skills :relaxed:*
