@@ -12,9 +12,9 @@ User can call for emergencies through home page or see daily affected CORONA pat
 
 ### Some Glimpse
 <p float="left">
-  <img src="screenshots/home.png" width="150"  alt="Home Screen" />
-  <img src="screenshots/stats.png" width="150"  alt="Stats Screen" /> 
-  <img src="screenshots/todo.png" width="150"  alt="TODO Screen" />
+  <img src="screenshots/home.png" width="150"  alt="Home Screen"  title="Home Screen"/>
+  <img src="screenshots/stats.png" width="150"  alt="Stats Screen" title="Stats Screen"/> 
+  <img src="screenshots/todo.png" width="150"  alt="TODO Screen" title="TODO Screen"/>
 </p>
 
 >Made with love by **Utkarsh** :heart:
