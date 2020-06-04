@@ -1,11 +1,11 @@
 import 'package:about/about.dart';
-import 'package:covid/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart' as launch;
 
 import '../constants/assets.dart';
+import '../constants/colors.dart';
 
 class AboutScreen extends StatelessWidget {
   @override

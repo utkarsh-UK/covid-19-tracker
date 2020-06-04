@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:device_preview/device_preview.dart';
 
 import './constants/colors.dart';
-
 import './screens/home_screen.dart';
 
 void main() => runApp(
-      DevicePreview(
-        builder: (context) => MyApp(),
-        enabled: false,
-      ),
+      MyApp(),
     );
 
 class MyApp extends StatelessWidget {
@@ -19,8 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Covid Tracker',
       debugShowCheckedModeBanner: false,
-      locale: DevicePreview.of(context).locale, // <--- Add the locale
-      builder: DevicePreview.appBuilder,
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
         primaryColor: MyColors.PRIMARY_COLOR,

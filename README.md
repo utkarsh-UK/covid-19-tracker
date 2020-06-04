@@ -10,6 +10,9 @@ User can call for emergencies through home page or see daily affected CORONA pat
 * API consumed for this app : [Indian COVID API](https://github.com/amodm/api-covid19-in).
 * The image resources used in this app are from [Pexels](https://www.pexels.com/).
 
+### Installation
+To try the APK on real device, install ARM64 version APK [COVID 19](outputs/COVID.apk).
+
 ### Some Glimpse
 <p float="left">
   <img src="screenshots/home.png" width="150"  alt="Home Screen"  title="Home Screen"/>
